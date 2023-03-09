@@ -1,0 +1,24 @@
+name: Deploy pages
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Install Slidev
+        run: npm install
+      - name: Build
+        run: npx slidev build --base /${{ github.event.repository.name }}/
+      - name: Deploy pages
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          build_dir: dist
+          keep_history: true
+          commit_message: "docs(pages): deploy to GitHub pages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
